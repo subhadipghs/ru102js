@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require("moment");
 
 /**
  * Takes a UNIX timestamp in seconds and returns the minute of the day
@@ -8,11 +8,14 @@ const moment = require('moment');
  * @returns {number} - the minute of the day that the supplied timestamp represents.
  */
 const getMinuteOfDay = (timestamp) => {
-  const t = (timestamp === undefined ? Math.floor(new Date().getTime() / 1000) : timestamp);
+  const t =
+    timestamp === undefined
+      ? Math.floor(new Date().getTime() / 1000)
+      : timestamp;
   const ts = moment.unix(t).utc();
-  const dayStart = moment.unix(t).utc().startOf('day');
+  const dayStart = moment.unix(t).utc().startOf("day");
 
-  return ts.diff(dayStart, 'minutes');
+  return ts.diff(dayStart, "minutes");
 };
 
 /**
@@ -25,9 +28,9 @@ const getMinuteOfDay = (timestamp) => {
  *  minute of the day that timestamp falls on.
  */
 const getTimestampForMinuteOfDay = (timestamp, minute) => {
-  const dayStart = moment.unix(timestamp).utc().startOf('day');
+  const dayStart = moment.unix(timestamp).utc().startOf("day");
 
-  return dayStart.add(minute, 'minutes').unix();
+  return dayStart.add(minute, "minutes").unix();
 };
 
 /**
@@ -35,7 +38,8 @@ const getTimestampForMinuteOfDay = (timestamp, minute) => {
  * @param {number} timestamp - a UNIX timestamp in seconds.
  * @returns {string} - the YYYY-MM-DD string for the supplied timestamp.
  */
-const getDateString = timestamp => moment.unix(timestamp).utc().format('YYYY-MM-DD');
+const getDateString = (timestamp) =>
+  moment.unix(timestamp).utc().format("YYYY-MM-DD");
 
 /**
  * Returns the current UNIX timestamp in seconds.

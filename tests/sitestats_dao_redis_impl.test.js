@@ -61,8 +61,8 @@ test(`${testSuiteName}: update`, async () => {
   const meterReading2 = {
     siteId: 999,
     dateTime: 1562619482,
-    whUsed: 24.4,
     whGenerated: 12.1,
+    whUsed: 24.4,
     tempC: 24.4,
   };
 
