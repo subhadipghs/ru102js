@@ -76,7 +76,12 @@ const updateOptimized = async (meterReading) => {
   tx.hincrbyAsync(key, "meterReadingCount", 1);
   tx.expireAsync(key, weekSeconds);
   tx.hsetAsync(key, "lastReportingTime", timeUtils.getCurrentTimestamp());
+<<<<<<< HEAD
+=======
+  await tx.exec();
   // update the max watt hour generated
+
+>>>>>>> 11fafc00753888b539c96732b14edf318762f0a9
   const u1 = compareAndUpdateScript.updateIfGreater(
       key,
       "maxWhGenerated",
@@ -92,12 +97,21 @@ const updateOptimized = async (meterReading) => {
       "maxCapacity",
       readingCapacity
     );
- 
+<<<<<<< HEAD
+  
   tx.evalshaAsync(u1);
   tx.evalshaAsync(u2);
   tx.evalshaAsync(u3);
   await tx.exec();
- // END Challenge #3
+=======
+
+  await client.evalshaAsync(u1);
+  // update the min watt hour generated
+  await client.evalshaAsync(u2);
+  // update the max capacity
+  await client.evalshaAsync(u3);
+>>>>>>> 11fafc00753888b539c96732b14edf318762f0a9
+  // END Challenge #3
 };
 
 /* eslint-enable */
