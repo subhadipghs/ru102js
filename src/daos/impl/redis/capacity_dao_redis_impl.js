@@ -45,8 +45,8 @@ const update = async (meterReading) => {
 const getReport = async (limit) => {
   const client = redis.getClient();
   const capacityRankingKey = keyGenerator.getCapacityRankingKey();
-  const pipeline = client.batch();
 
+  const pipeline = client.batch();
   pipeline.zrange(capacityRankingKey, 0, limit - 1, 'WITHSCORES');
   pipeline.zrevrange(capacityRankingKey, 0, limit - 1, 'WITHSCORES');
 
@@ -67,7 +67,7 @@ const getRank = async (siteId) => {
   // START Challenge #4
   const client = redis.getClient();
 
-  const result = await client.zrankAsync(
+  const result = await client.zrevrankAsync(
     keyGenerator.getCapacityRankingKey(),
     `${siteId}`,
   );
