@@ -113,17 +113,31 @@ const findAll = async () => {
 
   const siteIds = await client.zrangeAsync(keyGenerator.getSiteGeoKey(), 0, -1);
   const sites = [];
+  // for (const siteId of siteIds) {
+  //   const siteKey = keyGenerator.getSiteHashKey(siteId);
+  //
+  //   /* eslint-disable no-await-in-loop */
+  //   const siteHash = await client.hgetallAsync(siteKey);
+  //   /* eslint-enable */
+  //
+  //   if (siteHash) {
+  //     // Call remap to remap the flat key/value representation
+  //     // from the Redis hash into the site domain object format.
+  //     sites.push(remap(siteHash));
+  //   }
+  // }
+  // -----------------------------------------------------------------
+  // optmization: using pipeline to make less round-trip to the server
+  const pipeline = client.batch();
 
   for (const siteId of siteIds) {
     const siteKey = keyGenerator.getSiteHashKey(siteId);
+    pipeline.hgetallAsync(siteKey);
+  }
+  const siteHashes = await pipeline.execAsync();
 
-    /* eslint-disable no-await-in-loop */
-    const siteHash = await client.hgetallAsync(siteKey);
-    /* eslint-enable */
-
+  for (const siteHash of siteHashes) {
     if (siteHash) {
-      // Call remap to remap the flat key/value representation
-      // from the Redis hash into the site domain object format.
       sites.push(remap(siteHash));
     }
   }
@@ -163,8 +177,8 @@ const findByGeo = async (lat, lng, radius, radiusUnit) => {
       sites.push(remap(siteHash));
     }
   }
-
   return sites;
+
 };
 
 /**
@@ -180,8 +194,6 @@ const findByGeo = async (lat, lng, radius, radiusUnit) => {
 const findByGeoWithExcessCapacity = async (lat, lng, radius, radiusUnit) => {
   /* eslint-disable no-unreachable */
   // Challenge #5, remove the next line...
-  return [];
-
   const client = redis.getClient();
 
   // Create a pipeline to send multiple commands in one round trip.
